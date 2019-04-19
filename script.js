@@ -15,13 +15,11 @@ var initialize = function(data){
                   });
                 });
 
-  //console.log(homeworks)
+  console.log(homeworks)
 
   //console.log(corr(homeworks,0,1))
 
   var testarray = [];
-
-
 
 for (var i = 0; i < homeworks.length; i++) {
   var temparray = [];
@@ -32,10 +30,17 @@ for (var i = 0; i < homeworks.length; i++) {
 }
 console.log(testarray);
 
-  // var s = {h: 500, w: 500};
-  // var m = {l: screen.h*.01, r: screen.h*.01,
-  //   b: screen.h*.01, t: screen.h*.01};
+var samearray = [];
 
+for (var i = 0; i < homeworks.length; i++) {
+var temparray = [];
+for (var j = 0; j < homeworks.length; j++) {
+  temparray.push(similar(homeworks,i,j));
+}
+samearray.push(temparray);
+}
+
+console.log(samearray);
 
   var svgheight= window.innerHeight;
 
@@ -94,6 +99,8 @@ console.log(testarray);
          .data(data[student])
          .enter()
          .append("rect")
+         .classed('square',true)
+         .classed('row'+student,true)
          .attr("x", function(d,i) {return margins.left+xscale(i); })
          .attr("y", function(d){return margins.top+yscale(student)})
          .attr("height", 10)
@@ -151,6 +158,19 @@ console.log(testarray);
          })
          .attr('width',20);
 
+}
+
+var similar = function(data,s1,s2){
+
+  var student1 = data[s1];
+  var student2 = data[s2];
+
+  var same = 0;
+
+  student1.forEach(function(d,i){
+    if(d == student2[i]){same = same+1}
+  })
+  return same;
 }
 
 var corr = function(data,s1,s2){
