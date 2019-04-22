@@ -68,8 +68,14 @@ console.log(samearray);
 
 
   var svg = d3.select("body").append("svg")
+                             .classed('svg1',true)
                              .attr("height",svgwidth)
                              .attr("width",svgheight);
+
+ var svg2 = d3.select("body").append("svg")
+                            .classed('svg2',true)
+                            .attr("height",svgwidth)
+                            .attr("width",svgheight);
 
   var strongcolorscale = d3.scaleLinear().domain([0.6,1.1]).range([0.9,1]);
   var weakcolorscale = d3.scaleLinear().domain([0,0.6]).range([0,0.4]);
@@ -115,9 +121,60 @@ console.log(samearray);
          // })
   }
 
+  var simstrongcolor = d3.scaleLinear().domain([0,5]).range([0,1]);
+  var simweakcolorscale = d3.scaleLinear().domain([0,0.6]).range([0,0.4]);
+
+  var simrow = function(data,student){
+
+    svg2.selectAll(".row"+student)
+         .data(data[student])
+         .enter()
+         .append("rect")
+         .classed('square',true)
+         .classed('row'+student,true)
+         .attr("x", function(d,i) {return margins.left+xscale(i); })
+         .attr("y", function(d){return margins.top+yscale(student)})
+         .attr("height", 10)
+         .attr("width", 10)
+         .attr('fill',function(d){
+           if(d>5){return 'black'}
+           else{
+             return d3.interpolateReds(simstrongcolor(d));
+           }
+
+
+         })
+
+  }
+
+  for (var i = 0; i < testarray.length; i++) {
+    simrow(samearray,i);
+  }
+
   for (var i = 0; i < testarray.length; i++) {
     rowmake(testarray,i);
   }
+
+  var ldata = [5,4,3,2,1];
+  var tdata = [5,4,3,2,1];
+  svg2.selectAll('.legendcolor').data(ldata).enter()
+          .append('rect')
+          .attr('x',function(d){return width+150;})
+          .attr('y',function(d,i){return height/2+i*27;})
+          .attr('width',15)
+          .attr('height',15)
+          .attr('fill',function(d){
+            if(d>5){return 'black'}
+            else{
+              return d3.interpolateReds(simstrongcolor(d));
+            }
+
+          });
+  svg2.selectAll('.legendtext').data(tdata).enter()
+          .append('text')
+          .attr('x',function(d){return width+170;})
+          .attr('y',function(d,i){return height/2+i*27+12;})
+          .text(function(d){return d;});
 
   var imheight = svgheight/25;
   //console.log('window: '+svgheight)
@@ -157,6 +214,42 @@ console.log(samearray);
            return 20;
          })
          .attr('width',20);
+
+         svg2.selectAll('.verticalimg')
+                .data(data)
+                .enter()
+                .append('svg:image')
+                .attr('xlink:href',function(d){
+                  return d.picture;
+                })
+                .attr('x',function(d,i){
+                  return 55;
+                })
+                .attr('y',function(d,i){
+                  return margins.top+yscale(i)-5;
+                })
+                .attr('height',function(d){
+                  return 20;
+                })
+                .attr('width',20);
+
+         svg2.selectAll('.horizontalimg')
+                .data(data)
+                .enter()
+                .append('svg:image')
+                .attr('xlink:href',function(d){
+                  return d.picture;
+                })
+                .attr('x',function(d,i){
+                  return margins.left+xscale(i)-5;
+                })
+                .attr('y',function(d,i){
+                  return svgheight-25;
+                })
+                .attr('height',function(d){
+                  return 20;
+                })
+                .attr('width',20);
 
 }
 
